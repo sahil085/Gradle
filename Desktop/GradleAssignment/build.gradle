@@ -1,0 +1,111 @@
+group 'Com.ttn'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+
+// Qtn 6 //
+
+apply from:'mytasks.gradle'
+
+sourceCompatibility = 1.8
+
+// Qtn 5 //
+
+//repositories {
+//    maven { url "http://maven.springframework.org/release" }
+//    maven { url "http://maven.restlet.org" }
+//    mavenCentral()
+//
+//
+// }
+
+sourceSets {
+    jav
+    java2
+    main{
+
+        java{
+            srcDir  'src/main/java'
+//            srcDir 'src/main/java2'
+
+        }
+        resources {
+            exclude '**/*.txt'
+        }
+    }
+}
+
+// Qtn 2 //
+
+//jar{
+//    from sourceSets.jav.output
+//    from sourceSets.java2.output
+//    manifest {
+//    attributes 'Implementation-Title': 'Gradle Jar File Example',
+//            'Implementation-Version': version,
+//            'Main-Class': 'Demo'
+//}
+//}
+
+// Qtn 3 //
+jar{
+    baseName = 'an'
+//    rootSpec.exclude ('resources/*.txt')
+    from('src/main/resources')
+            {
+                include '**/*.xml'
+            }
+    manifest {
+    attributes 'Implementation-Title': 'Gradle Jar File Example',
+            'Implementation-Version': version
+
+}
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
+}
+
+// Qtn 1 //
+
+//task fatJar(type: Jar) {
+//    manifest {
+//        attributes 'Implementation-Title': 'Gradle Jar File Example',
+//                'Implementation-Version': version,
+//                'Main-Class': 'Demo'
+//    }
+//    baseName = project.name + '-all'
+//    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+//    with jar
+//
+// }
+
+
+//ext.serverExcludes = []
+//
+//task utilJar(type: Jar) {
+//    from(sourceSets.main.output) {
+//        include "/**"
+//        project.ext.serverExcludes.addAll(includes)
+//    }
+//}
+
+
+// Qtn 4 //
+
+task uberjar(type: Jar, dependsOn: [':compileJava', ':processResources']) {
+    from files(sourceSets.main.output.classesDir)
+    from configurations.runtime.asFileTree.files.collect { zipTree(it) }
+
+    manifest {
+        attributes 'Main-Class': 'Demo'
+    }
+}
